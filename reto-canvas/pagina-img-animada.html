@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <title>DVD Bouncing Logo</title>
+
+   <style>
+
+      body {
+         margin: 0;
+         min-height: 100vh;
+
+         display: flex;
+         justify-content: center;
+         align-items: center;
+
+         background-color: black;
+      }
+
+      /* The canvas */
+      canvas {
+         border: 2px solid #5e5e5e;
+         background-color: black;
+      }
+
+      /* DVD GIF */
+      #dvd {
+         position: absolute;
+
+         width: 150px;
+         height: 150px;
+
+         pointer-events: none;
+      }
+
+   </style>
+
+</head>
+
+<body>
+
+   <!-- Canvas -->
+   <canvas id="micanvas" width="800" height="600"></canvas>
+
+   <!-- DVD Animated GIF -->
+   <img id="dvd" src="logo_dvdGIF.gif">
+
+   <script>
+
+      // Get the canvas
+      var canvas = document.getElementById("micanvas");
+
+      // Get the DVD GIF
+      var dvd = document.getElementById("dvd");
+
+      // Size of the DVD
+      var imageWidth = 150;
+      var imageHeight = 150;
+
+      // Starting position
+      var x = Math.random() * (canvas.width - imageWidth);
+      var y = Math.random() * (canvas.height - imageHeight);
+
+      // Speed
+      var dx = 0.9;
+      var dy = 0.9;
+
+      function animate() {
+
+         // Repeat the animation
+         requestAnimationFrame(animate);
+
+         // Get the position of the canvas on the page
+         var canvasPosition = canvas.getBoundingClientRect();
+
+         // Move the DVD
+         x += dx;
+         y += dy;
+
+         // Check left and right walls
+         if (x <= 0 || x + imageWidth >= canvas.width) {
+            dx = -dx;
+         }
+
+         // Check top and bottom walls
+         if (y <= 0 || y + imageHeight >= canvas.height) {
+            dy = -dy;
+         }
+
+         // Move the GIF
+         dvd.style.left = (canvasPosition.left + x) + "px";
+         dvd.style.top = (canvasPosition.top + y) + "px";
+      }
+
+      // Start animation
+      animate();
+
+   </script>
+
+</body>
+
+</html>
