@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>A4 - Arte en CANVAS</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+
+            background-color: #222;
+            color: white;
+
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        canvas {
+            display: block;
+
+            margin: 30px auto;
+
+            border: 4px solid white;
+
+            max-width: 90%;
+            height: auto;
+        }
+
+        .back {
+            display: inline-block;
+
+            padding: 12px 25px;
+
+            color: white;
+            text-decoration: none;
+
+            border: 2px solid white;
+        }
+
+        .back:hover {
+            background-color: white;
+            color: #222;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>A4 - Arte en CANVAS</h1>
+
+    <canvas id="canvas" width="900" height="500"></canvas>
+
+
+    <script>
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+
+        let carX = -400;
+
+
+        const speed = 3;
+
+
+        function rectangle(x, y, width, height, color) {
+
+            ctx.fillStyle = color;
+
+            ctx.fillRect(
+                x,
+                y,
+                width,
+                height
+            );
+        }
+
+        function drawBackground() {
+
+            // Sky
+            rectangle(
+                0,
+                0,
+                900,
+                500,
+                "#87CEEB"
+            );
+
+
+            // Sun
+            rectangle(
+                700,
+                60,
+                80,
+                80,
+                "#FFD54F"
+            );
+
+
+            rectangle(
+                100,
+                80,
+                120,
+                30,
+                "white"
+            );
+
+            rectangle(
+                130,
+                55,
+                60,
+                55,
+                "white"
+            );
+
+
+            rectangle(
+                420,
+                100,
+                130,
+                30,
+                "white"
+            );
+
+            rectangle(
+                450,
+                75,
+                70,
+                55,
+                "white"
+            );
+
+
+            rectangle(
+                0,
+                350,
+                900,
+                40,
+                "#4CAF50"
+            );
+
+
+            rectangle(
+                0,
+                390,
+                900,
+                110,
+                "#333333"
+            );
+
+
+            rectangle(
+                0,
+                435,
+                120,
+                12,
+                "#FFFFFF"
+            );
+
+            rectangle(
+                200,
+                435,
+                120,
+                12,
+                "#FFFFFF"
+            );
+
+            rectangle(
+                400,
+                435,
+                120,
+                12,
+                "#FFFFFF"
+            );
+
+            rectangle(
+                600,
+                435,
+                120,
+                12,
+                "#FFFFFF"
+            );
+
+            rectangle(
+                800,
+                435,
+                100,
+                12,
+                "#FFFFFF"
+            );
+        }
+
+
+        function drawCar(x) {
+
+            // Main body
+            rectangle(
+                x + 30,
+                300,
+                300,
+                70,
+                "#E53935"
+            );
+
+
+            rectangle(
+                x,
+                340,
+                360,
+                35,
+                "#C62828"
+            );
+
+
+            rectangle(
+                x + 90,
+                250,
+                180,
+                50,
+                "#E53935"
+            );
+
+
+            // Hood
+            rectangle(
+                x + 270,
+                300,
+                90,
+                40,
+                "#E53935"
+            );
+
+            // Back window
+            rectangle(
+                x + 105,
+                260,
+                70,
+                35,
+                "#90CAF9"
+            );
+
+
+            rectangle(
+                x + 185,
+                260,
+                70,
+                35,
+                "#90CAF9"
+            );
+
+
+            rectangle(
+                x + 175,
+                255,
+                10,
+                45,
+                "#8B0000"
+            );
+
+
+            rectangle(
+                x - 10,
+                340,
+                20,
+                20,
+                "#BDBDBD"
+            );
+
+
+            rectangle(
+                x + 350,
+                340,
+                30,
+                20,
+                "#BDBDBD"
+            );
+
+            rectangle(
+                x + 10,
+                315,
+                15,
+                20,
+                "#FF1744"
+            );
+
+
+            rectangle(
+                x + 340,
+                310,
+                20,
+                20,
+                "#FFEB3B"
+            );
+
+            rectangle(
+                x + 50,
+                350,
+                60,
+                60,
+                "#111111"
+            );
+
+
+            rectangle(
+                x + 65,
+                365,
+                30,
+                30,
+                "#777777"
+            );
+
+
+            rectangle(
+                x + 250,
+                350,
+                60,
+                60,
+                "#111111"
+            );
+
+
+            rectangle(
+                x + 265,
+                365,
+                30,
+                30,
+                "#777777"
+            );
+
+            rectangle(
+                x + 175,
+                305,
+                5,
+                65,
+                "#8B0000"
+            );
+
+
+            rectangle(
+                x + 190,
+                315,
+                25,
+                7,
+                "#FFFFFF"
+            );
+
+
+            rectangle(
+                x + 325,
+                325,
+                25,
+                10,
+                "#555555"
+            );
+        }
+
+
+
+        function animate() {
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            drawBackground();
+
+
+            drawCar(carX);
+
+
+            carX += speed;
+
+            if (carX > canvas.width) {
+
+                carX = -400;
+
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+
+        animate();
+
+    </script>
+
+</body>
+
+</html>
