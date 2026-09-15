@@ -1,0 +1,244 @@
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Eyes Follow Mouse</title>
+
+    <style>
+        body {
+            background-color: #333;
+            text-align: center;
+        }
+
+        canvas {
+            background-color: white;
+            border: 2px solid black;
+        }
+
+        aside {
+            color: white;
+            font-family: Arial, sans-serif;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <aside>
+        Move your mouse over the canvas. Click an eye to blink.
+    </aside>
+
+    <script>
+
+        window.onload = function () {
+
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+
+        
+
+            var background = new Image();
+
+            // Change this to the name of your image
+            background.src = "Cat.jpg"
+
+
+       
+            var mouse = {
+                x: canvas.width / 2,
+                y: canvas.height / 2
+            };
+
+            canvas.addEventListener("mousemove", function (event) {
+
+                var rect = canvas.getBoundingClientRect();
+
+                mouse.x = event.clientX - rect.left;
+                mouse.y = event.clientY - rect.top;
+
+            });
+
+
+            var leftEye = {
+                x: 140,
+                y: 200,
+                radius: 50,
+                blinking: false
+            };
+
+            var rightEye = {
+                x: 260,
+                y: 200,
+                radius: 50,
+                blinking: false
+            };
+
+
+            canvas.addEventListener("click", function (event) {
+
+                var rect = canvas.getBoundingClientRect();
+
+                var clickX = event.clientX - rect.left;
+                var clickY = event.clientY - rect.top;
+
+
+                // Check left eye
+
+                var leftDistance = Math.sqrt(
+                    Math.pow(clickX - leftEye.x, 2) +
+                    Math.pow(clickY - leftEye.y, 2)
+                );
+
+                if (leftDistance <= leftEye.radius) {
+
+                    leftEye.blinking = true;
+
+                    setTimeout(function () {
+                        leftEye.blinking = false;
+                    }, 300);
+                }
+
+
+                // Check right eye
+
+                var rightDistance = Math.sqrt(
+                    Math.pow(clickX - rightEye.x, 2) +
+                    Math.pow(clickY - rightEye.y, 2)
+                );
+
+                if (rightDistance <= rightEye.radius) {
+
+                    rightEye.blinking = true;
+
+                    setTimeout(function () {
+                        rightEye.blinking = false;
+                    }, 300);
+                }
+
+            });
+
+
+            function drawEye(eye) {
+
+                // If the eye is blinking,
+                // draw a closed eye instead.
+
+                if (eye.blinking) {
+
+                    context.beginPath();
+
+                    context.arc(
+                        eye.x,
+                        eye.y,
+                        eye.radius,
+                        0,
+                        Math.PI
+                    );
+
+                    context.strokeStyle = "black";
+                    context.lineWidth = 5;
+                    context.stroke();
+
+                    return;
+                }
+
+                context.beginPath();
+
+                context.arc(
+                    eye.x,
+                    eye.y,
+                    eye.radius,
+                    0,
+                    Math.PI * 2
+                );
+
+                context.fillStyle = "white";
+                context.fill();
+
+                context.strokeStyle = "black";
+                context.lineWidth = 2;
+                context.stroke();
+
+
+  
+                var dx = mouse.x - eye.x;
+                var dy = mouse.y - eye.y;
+
+                var angle = Math.atan2(dy, dx);
+
+
+        
+
+                var pupilDistance = 20;
+
+                var pupilX =
+                    eye.x + Math.cos(angle) * pupilDistance;
+
+                var pupilY =
+                    eye.y + Math.sin(angle) * pupilDistance;
+
+
+         
+
+                context.beginPath();
+
+                context.arc(
+                    pupilX,
+                    pupilY,
+                    20,
+                    0,
+                    Math.PI * 2
+                );
+
+                context.fillStyle = "black";
+                context.fill();
+
+            }
+
+            function drawFrame() {
+
+                window.requestAnimationFrame(drawFrame);
+
+
+                // Clear canvas
+
+                context.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+
+
+                if (background.complete) {
+
+                    context.drawImage(
+                        background,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+                }
+
+
+                drawEye(leftEye);
+                drawEye(rightEye);
+
+            }
+
+
+            drawFrame();
+
+        };
+
+    </script>
+
+</body>
+</html>
