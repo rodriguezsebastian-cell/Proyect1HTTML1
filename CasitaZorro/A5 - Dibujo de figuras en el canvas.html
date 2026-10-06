@@ -1,0 +1,654 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Figuras con Canvas</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: #222;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        canvas {
+            border: 5px solid #555;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <h1>Figuras con Canvas</h1>
+
+    <canvas id="canvas" width="1000" height="700"></canvas>
+
+
+    <script>
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+
+        // =====================================
+        // FONDO CON GRADIENTE
+        // =====================================
+
+        var fondo = ctx.createLinearGradient(
+            0,
+            1,
+            2,
+            canvas.height
+        );
+
+        fondo.addColorStop(0, "#4d82ff");
+        fondo.addColorStop(1, "#ffffff");
+
+        ctx.fillStyle = fondo;
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        // =====================================
+        // SUELO
+        // =====================================
+
+        ctx.fillStyle = "#5c9e4a";
+
+        ctx.fillRect(
+            0,
+            550,
+            1000,
+            150
+        );
+
+
+        // =====================================
+        // CASITA
+        // =====================================
+
+        function dibujarCasita(x, y) {
+
+            // CASA
+
+            ctx.fillStyle = "#f4c27a";
+
+            ctx.fillRect(
+                x,
+                y,
+                200,
+                150
+            );
+
+
+            // TECHO
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x - 20,
+                y
+            );
+
+            ctx.lineTo(
+                x + 100,
+                y - 100
+            );
+
+            ctx.lineTo(
+                x + 220,
+                y
+            );
+
+            ctx.closePath();
+
+
+            ctx.fillStyle = "#b22222";
+
+            ctx.fill();
+
+
+            // PUERTA
+
+            ctx.fillStyle = "#654321";
+
+            ctx.fillRect(
+                x + 80,
+                y + 80,
+                45,
+                70
+            );
+
+
+            // VENTANA
+
+            ctx.fillStyle = "#8ee7ff";
+
+            ctx.fillRect(
+                x + 25,
+                y + 40,
+                50,
+                45
+            );
+
+
+            // MARCO VERTICAL
+
+            ctx.strokeStyle = "#333";
+
+            ctx.lineWidth = 4;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x + 50,
+                y + 40
+            );
+
+            ctx.lineTo(
+                x + 50,
+                y + 85
+            );
+
+            ctx.stroke();
+
+
+            // MARCO HORIZONTAL
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x + 25,
+                y + 62
+            );
+
+            ctx.lineTo(
+                x + 75,
+                y + 62
+            );
+
+            ctx.stroke();
+
+
+            // CHIMENEA
+
+            ctx.fillStyle = "#777";
+
+            ctx.fillRect(
+                x + 145,
+                y - 70,
+                35,
+                70
+            );
+
+        }
+
+
+        dibujarCasita(100, 400);
+
+
+
+        // =====================================
+        // HONGUITO
+        // =====================================
+
+        function dibujarHonguito(x, y) {
+
+            // TALLO
+
+            ctx.fillStyle = "#f2d6a2";
+
+            ctx.fillRect(
+                x - 20,
+                y,
+                40,
+                70
+            );
+
+
+            // SOMBRERO
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                65,
+                Math.PI,
+                0
+            );
+
+            ctx.closePath();
+
+            ctx.fillStyle = "#e53935";
+
+            ctx.fill();
+
+
+            // PUNTOS BLANCOS
+
+            ctx.fillStyle = "white";
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x - 35,
+                y - 25,
+                10,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x + 5,
+                y - 40,
+                12,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x + 35,
+                y - 15,
+                8,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+        }
+
+
+        dibujarHonguito(380, 500);
+
+
+
+        // =====================================
+        // ESTRELLA
+        // =====================================
+
+        function dibujarEstrella(x, y, radio) {
+
+            ctx.beginPath();
+
+            for (
+                var i = 0;
+                i < 10;
+                i++
+            ) {
+
+                var angulo =
+                    -Math.PI / 2 +
+                    i * Math.PI / 5;
+
+                var r =
+                    i % 2 === 0
+                        ? radio
+                        : radio / 2;
+
+                var px =
+                    x +
+                    Math.cos(angulo) * r;
+
+                var py =
+                    y +
+                    Math.sin(angulo) * r;
+
+
+                if (i === 0) {
+
+                    ctx.moveTo(
+                        px,
+                        py
+                    );
+
+                } else {
+
+                    ctx.lineTo(
+                        px,
+                        py
+                    );
+
+                }
+
+            }
+
+            ctx.closePath();
+
+            ctx.fillStyle = "#FFD700";
+
+            ctx.fill();
+
+            ctx.strokeStyle = "#cc9900";
+
+            ctx.lineWidth = 3;
+
+            ctx.stroke();
+
+        }
+
+
+        dibujarEstrella(
+            650,
+            120,
+            60
+        );
+
+
+
+        // =====================================
+        // LUNA
+        // DOS CÍRCULOS INTERSECTADOS
+        // =====================================
+
+        function dibujarLuna(x, y) {
+
+            // PRIMER CÍRCULO
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                70,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle = "#FFF4A3";
+
+            ctx.fill();
+
+
+            // SEGUNDO CÍRCULO
+            // Usa el color del cielo
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x + 30,
+                y - 15,
+                70,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle = "#4facfe";
+
+            ctx.fill();
+
+        }
+
+
+        dibujarLuna(
+            820,
+            220
+        );
+
+
+
+        // =====================================
+        // ZORRITO CETYS
+        // AHORA MÁS AL CENTRO
+        // =====================================
+
+        function dibujarZorrito(x, y) {
+
+            // CUERPO
+
+            ctx.fillStyle = "#e87524";
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                x,
+                y + 60,
+                65,
+                45,
+                0,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // CABEZA
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                55,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // OREJA IZQUIERDA
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x - 45,
+                y - 35
+            );
+
+            ctx.lineTo(
+                x - 70,
+                y - 100
+            );
+
+            ctx.lineTo(
+                x - 15,
+                y - 55
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+
+            // OREJA DERECHA
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x + 45,
+                y - 35
+            );
+
+            ctx.lineTo(
+                x + 70,
+                y - 100
+            );
+
+            ctx.lineTo(
+                x + 15,
+                y - 55
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+
+            // CARA BLANCA
+
+            ctx.fillStyle = "#fff1df";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y + 15,
+                35,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // OJOS
+
+            ctx.fillStyle = "black";
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x - 20,
+                y - 5,
+                6,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x + 20,
+                y - 5,
+                6,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // NARIZ
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y + 20,
+                7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // SONRISA
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y + 25,
+                18,
+                0,
+                Math.PI
+            );
+
+            ctx.strokeStyle = "black";
+
+            ctx.lineWidth = 3;
+
+            ctx.stroke();
+
+
+            // COLA
+
+            ctx.fillStyle = "#e87524";
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                x + 80,
+                y + 65,
+                55,
+                25,
+                -0.5,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // PUNTA BLANCA DE LA COLA
+
+            ctx.fillStyle = "white";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x + 125,
+                y + 40,
+                18,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+        }
+
+
+        // ZORRO MÁS CERCA DEL CENTRO
+
+        dibujarZorrito(
+            600,
+            440
+        );
+
+
+
+        // =====================================
+        // TEXTO
+        // =====================================
+
+        ctx.fillStyle = "#222";
+
+        ctx.font = "bold 24px Arial";
+
+        ctx.fillText(
+            "Zorrito CETYS en su casita",
+            300,
+            680
+        );
+
+    </script>
+
+</body>
+
+</html>
