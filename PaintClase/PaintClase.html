@@ -1,0 +1,925 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Evita el escalado y zoom en navegadores móviles y de escritorio -->
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Paint</title>
+
+    <style>
+
+      /* =========================
+         PAGE
+         ========================= */
+
+      html, body {
+        zoom: 100%;
+        touch-action: none;
+      }
+
+      body {
+        background-color: rgb(46, 46, 46);
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+
+      /* =========================
+         MAIN LAYOUT
+         ========================= */
+
+      .paintArea {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+      }
+
+
+      /* =========================
+         LEFT TOOLBAR
+         ========================= */
+
+      #toolbar {
+        width: 280px;
+        min-height: 700px;
+        background-color: #ffa600;
+        padding: 20px;
+        border-radius: 15px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      #toolbar h2 {
+        color: #222222;
+        margin-top: 0;
+      }
+
+
+      /* =========================
+         COLORS
+         ========================= */
+
+      .colores {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .colores button {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        border: 1px solid #c56a02;
+        cursor: pointer;
+        border-radius: 200px;
+      }
+
+      #black {
+        background: rgb(0, 0, 0);
+      }
+
+      #red {
+        background: red;
+      }
+
+      #blue {
+        background: blue;
+      }
+
+      #green {
+        background: green;
+      }
+
+      #yellow {
+        background: yellow;
+      }
+
+      #purple {
+        background: purple;
+      }
+
+      .colores button:hover {
+        opacity: 0.5;
+      }
+
+
+      /* =========================
+         RGB COLOR BUTTON
+         ========================= */
+
+      #colorButton {
+        width: 70%;
+        height: 45px;
+        background: #222222;
+        color: #e7e5e5;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 100px;
+        margin-bottom: 10px;
+      }
+
+      #colorButton:hover {
+        opacity: 0.8;
+      }
+
+      #colorPickerContainer {
+        display: none;
+        margin: 5px;
+      }
+
+      #colorPicker {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+      }
+
+
+      /* =========================
+         BRUSH SIZE
+         ========================= */
+
+      .grosor {
+        color: #222222;
+        margin: 15px 0;
+        font-size: 18px;
+      }
+
+      #brushSize {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      #sizeValue {
+        display: block;
+        margin-top: 5px;
+      }
+
+
+      /* =========================
+         TOOL BUTTONS
+         ========================= */
+
+      #otros button {
+        width: 100%;
+        height: 50px;
+        background: #222222;
+        color: #e7e5e5;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 5px 0;
+        border: none;
+        border-radius: 5px;
+      }
+
+      #otros button:hover {
+        opacity: 0.7;
+      }
+
+
+      /* =========================
+         TOOLBAR COLOR
+         ========================= */
+
+      #toolbarColorButton {
+        width: 100%;
+        height: 45px;
+        background: #111111;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border: 1px solid white;
+        border-radius: 5px;
+        margin-top: 15px;
+      }
+
+      #toolbarColorButton:hover {
+        opacity: 0.8;
+      }
+
+      #toolbarColorPicker {
+        display: none;
+        width: 100px;
+        height: 40px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+
+
+      /* =========================
+         CANVAS
+         ========================= */
+
+      canvas {
+        border: 5px solid rgb(241, 241, 241);
+        background-color: white;
+        cursor: crosshair;
+      }
+
+      aside {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+    </style>
+  </head>
+
+
+  <body>
+
+    <!-- LOGO -->
+    <img
+      src="C:\Users\jlrgu\Downloads\Clase 04 - trigonometria\Clase 04 - trigonometria\PaintClase\DrawOnit.png"
+      alt="Paint"
+      style="display: block; margin: 0 auto; width: 600px;"
+    >
+
+
+    <div class="paintArea">
+
+      <!-- =========================
+           LEFT TOOLBAR
+           ========================= -->
+
+      <div id="toolbar">
+
+        <h2>Herramientas</h2>
+
+
+        <!-- COLORS -->
+
+        <div class="colores">
+
+          <button
+            id="black"
+            type="button"
+            value="#000000">
+          </button>
+
+          <button
+            id="red"
+            type="button"
+            value="#ff0000">
+          </button>
+
+          <button
+            id="blue"
+            type="button"
+            value="#0000ff">
+          </button>
+
+          <button
+            id="green"
+            type="button"
+            value="#008000">
+          </button>
+
+          <button
+            id="yellow"
+            type="button"
+            value="#ffff00">
+          </button>
+
+          <button
+            id="purple"
+            type="button"
+            value="#800080">
+          </button>
+
+        </div>
+
+
+        <!-- RGB SELECTOR -->
+
+        <button
+          id="colorButton"
+          type="button">
+          Más colores
+        </button>
+
+        <div id="colorPickerContainer">
+
+          <input
+            type="color"
+            id="colorPicker"
+            value="#000000"
+            title="Selector de color RGB">
+
+        </div>
+
+
+        <!-- BRUSH SIZE -->
+
+        <div class="grosor">
+
+          <label for="brushSize">
+            Grosor
+          </label>
+
+          <input
+            type="range"
+            id="brushSize"
+            min="2"
+            max="50"
+            value="5">
+
+          <span id="sizeValue">
+            5 px
+          </span>
+
+        </div>
+
+
+        <!-- TOOLS -->
+
+        <div id="otros">
+
+          <button
+            id="pen"
+            type="button">
+            Pluma
+          </button>
+
+          <button
+            id="eraser"
+            type="button">
+            Borrador
+          </button>
+
+          <button
+            id="clearCanvas"
+            type="button">
+            Borrar Todo
+          </button>
+
+        </div>
+
+
+        <!-- CHANGE TOOLBAR COLOR -->
+
+        <button
+          id="toolbarColorButton"
+          type="button">
+          Cambiar color del panel
+        </button>
+
+        <input
+          type="color"
+          id="toolbarColorPicker"
+          value="#ffa600">
+
+      </div>
+
+
+      <!-- =========================
+           CANVAS
+           ========================= -->
+
+      <div>
+
+        <canvas
+          id="canvas"
+          width="1000"
+          height="700">
+        </canvas>
+
+        <aside style="color: #ffbb00;">
+          Controles: Ctrl + Z, Ctrl + Shift + Z, click y arrastrar
+        </aside>
+
+      </div>
+
+    </div>
+
+
+    <!-- UTILS -->
+
+    <script src="utils.js"></script>
+
+
+    <script>
+
+      window.onload = function () {
+
+        /* =========================
+           CANVAS
+           ========================= */
+
+        var canvas = document.getElementById('canvas');
+
+        var context = canvas.getContext('2d');
+
+        var mouse = utils.captureMouse(canvas);
+
+        var drawing = false;
+
+
+        /* =========================
+           DEFAULT SETTINGS
+           ========================= */
+
+        context.strokeStyle = "#000000";
+
+        context.lineWidth = 5;
+
+        context.lineCap = "round";
+
+        context.lineJoin = "round";
+
+        context.globalCompositeOperation = "source-over";
+
+
+        /* =========================
+           UNDO / REDO
+           ========================= */
+
+        var undoStack = [];
+
+        var redoStack = [];
+
+
+        function saveState() {
+
+          undoStack.push(canvas.toDataURL());
+
+          if (undoStack.length > 30) {
+
+            undoStack.shift();
+
+          }
+
+          // Cuando hacemos un nuevo cambio,
+          // ya no podemos rehacer los cambios anteriores.
+
+          redoStack = [];
+
+        }
+
+
+        function restoreState(state) {
+
+          var image = new Image();
+
+          image.onload = function () {
+
+            context.clearRect(
+              0,
+              0,
+              canvas.width,
+              canvas.height
+            );
+
+            context.drawImage(
+              image,
+              0,
+              0
+            );
+
+          };
+
+          image.src = state;
+
+        }
+
+
+        // Guardar el canvas vacío inicial
+
+        saveState();
+
+
+        /* =========================
+           DRAWING - MOUSE DOWN
+           ========================= */
+
+        canvas.addEventListener(
+          'mousedown',
+          function () {
+
+            drawing = true;
+
+            context.beginPath();
+
+            context.moveTo(
+              mouse.x,
+              mouse.y
+            );
+
+          },
+          false
+        );
+
+
+        /* =========================
+           DRAWING - MOUSE MOVE
+           ========================= */
+
+        canvas.addEventListener(
+          'mousemove',
+          function () {
+
+            if (!drawing) {
+              return;
+            }
+
+            context.lineTo(
+              mouse.x,
+              mouse.y
+            );
+
+            context.stroke();
+
+          },
+          false
+        );
+
+
+        /* =========================
+           DRAWING - MOUSE UP
+           ========================= */
+
+        canvas.addEventListener(
+          'mouseup',
+          function () {
+
+            if (drawing) {
+
+              drawing = false;
+
+              saveState();
+
+            }
+
+          },
+          false
+        );
+
+
+        /* =========================
+           DRAWING - MOUSE LEAVE
+           ========================= */
+
+        canvas.addEventListener(
+          'mouseleave',
+          function () {
+
+            if (drawing) {
+
+              drawing = false;
+
+              saveState();
+
+            }
+
+          },
+          false
+        );
+
+
+        /* =========================
+           COLORS
+           ========================= */
+
+        var colores =
+          document.querySelector('.colores');
+
+
+        colores.addEventListener(
+          'click',
+          function (event) {
+
+            if (
+              event.target.tagName === "BUTTON"
+            ) {
+
+              context.strokeStyle =
+                event.target.value;
+
+              context.globalCompositeOperation =
+                "source-over";
+
+            }
+
+          }
+        );
+
+
+        /* =========================
+           RGB COLOR PICKER
+           ========================= */
+
+        var colorButton =
+          document.getElementById(
+            'colorButton'
+          );
+
+        var colorPickerContainer =
+          document.getElementById(
+            'colorPickerContainer'
+          );
+
+
+        colorButton.addEventListener(
+          'click',
+          function () {
+
+            if (
+              colorPickerContainer.style.display === "block"
+            ) {
+
+              colorPickerContainer.style.display =
+                "none";
+
+            } else {
+
+              colorPickerContainer.style.display =
+                "block";
+
+            }
+
+          }
+        );
+
+
+        var colorPicker =
+          document.getElementById(
+            'colorPicker'
+          );
+
+
+        colorPicker.addEventListener(
+          'input',
+          function () {
+
+            context.strokeStyle =
+              colorPicker.value;
+
+            context.globalCompositeOperation =
+              "source-over";
+
+          }
+        );
+
+
+        /* =========================
+           BRUSH SIZE
+           ========================= */
+
+        var brushSize =
+          document.getElementById(
+            'brushSize'
+          );
+
+        var sizeValue =
+          document.getElementById(
+            'sizeValue'
+          );
+
+
+        brushSize.addEventListener(
+          'input',
+          function () {
+
+            context.lineWidth =
+              brushSize.value;
+
+            sizeValue.textContent =
+              brushSize.value + " px";
+
+          }
+        );
+
+
+        /* =========================
+           PEN
+           ========================= */
+
+        var penButton =
+          document.getElementById(
+            'pen'
+          );
+
+
+        penButton.addEventListener(
+          'click',
+          function () {
+
+            context.globalCompositeOperation =
+              "source-over";
+
+          }
+        );
+
+
+        /* =========================
+           ERASER
+           ========================= */
+
+        var eraserButton =
+          document.getElementById(
+            'eraser'
+          );
+
+
+        eraserButton.addEventListener(
+          'click',
+          function () {
+
+            context.globalCompositeOperation =
+              "destination-out";
+
+          }
+        );
+
+
+        /* =========================
+           CLEAR CANVAS
+           ========================= */
+
+        var clearButton =
+          document.getElementById(
+            'clearCanvas'
+          );
+
+
+        clearButton.addEventListener(
+          'click',
+          function () {
+
+            // Guardar el estado actual
+            // antes de borrar.
+
+            saveState();
+
+            context.clearRect(
+              0,
+              0,
+              canvas.width,
+              canvas.height
+            );
+
+            // Volver a la pluma después
+            // de borrar todo.
+
+            context.globalCompositeOperation =
+              "source-over";
+
+          }
+        );
+
+
+        /* =========================
+           CTRL + Z
+           UNDO
+           ========================= */
+
+        document.addEventListener(
+          'keydown',
+          function (event) {
+
+            if (
+              event.ctrlKey &&
+              event.key.toLowerCase() === "z"
+            ) {
+
+              event.preventDefault();
+
+
+              /* =====================
+                 REDO
+                 CTRL + SHIFT + Z
+                 ===================== */
+
+              if (event.shiftKey) {
+
+                if (
+                  redoStack.length > 0
+                ) {
+
+                  var currentState =
+                    canvas.toDataURL();
+
+                  undoStack.push(
+                    currentState
+                  );
+
+                  var redoState =
+                    redoStack.pop();
+
+                  restoreState(
+                    redoState
+                  );
+
+                }
+
+              }
+
+
+              /* =====================
+                 UNDO
+                 CTRL + Z
+                 ===================== */
+
+              else {
+
+                if (
+                  undoStack.length > 1
+                ) {
+
+                  var currentState =
+                    canvas.toDataURL();
+
+                  redoStack.push(
+                    currentState
+                  );
+
+                  undoStack.pop();
+
+                  var previousState =
+                    undoStack[
+                      undoStack.length - 1
+                    ];
+
+                  restoreState(
+                    previousState
+                  );
+
+                }
+
+              }
+
+            }
+
+          }
+        );
+
+
+        /* =========================
+           CHANGE TOOLBAR COLOR
+           ========================= */
+
+        var toolbar =
+          document.getElementById(
+            'toolbar'
+          );
+
+        var toolbarColorButton =
+          document.getElementById(
+            'toolbarColorButton'
+          );
+
+        var toolbarColorPicker =
+          document.getElementById(
+            'toolbarColorPicker'
+          );
+
+
+        toolbarColorButton.addEventListener(
+          'click',
+          function () {
+
+            if (
+              toolbarColorPicker.style.display === "inline-block"
+            ) {
+
+              toolbarColorPicker.style.display =
+                "none";
+
+            } else {
+
+              toolbarColorPicker.style.display =
+                "inline-block";
+
+            }
+
+          }
+        );
+
+
+        toolbarColorPicker.addEventListener(
+          'input',
+          function () {
+
+            toolbar.style.backgroundColor =
+              toolbarColorPicker.value;
+
+          }
+        );
+
+      };
+
+    </script>
+
+  </body>
+</html>
