@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Reloj</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .clock {
+            width: 300px;
+            height: 300px;
+            border: 8px solid #e0e0e0;
+            border-radius: 50%;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 0 20px #0008;
+        }
+
+        .number {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            text-align: center;
+            color: #222;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .number span {
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .hand {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: 50% 100%;
+            border-radius: 10px;
+        }
+
+        #hourHand {
+            width: 8px;
+            height: 75px;
+            background: #222;
+            margin-left: -4px;
+        }
+
+        #minuteHand {
+            width: 5px;
+            height: 110px;
+            background: #e53935;
+            margin-left: -2.5px;
+        }
+
+        .center {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #0f0f0f;
+            border: 3px solid #222;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .controls {
+            width: 320px;
+            margin-top: 25px;
+        }
+
+        .control {
+            margin: 18px 0;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #fcfcfc;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            background: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .buttons {
+            text-align: center;
+        }
+
+        #readout {
+            text-align: center;
+            color: #ffffff;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Reloj_Proyecto</h1>
+
+    <div class="clock" id="clock">
+
+        <!-- Clock numbers -->
+        <div class="number" style="transform: rotate(0deg)">
+            <span style="transform: rotate(0deg)">12</span>
+        </div>
+        <div class="number" style="transform: rotate(30deg)">
+            <span style="transform: rotate(-30deg)">1</span>
+        </div>
+        <div class="number" style="transform: rotate(60deg)">
+            <span style="transform: rotate(-60deg)">2</span>
+        </div>
+        <div class="number" style="transform: rotate(90deg)">
+            <span style="transform: rotate(-90deg)">3</span>
+        </div>
+        <div class="number" style="transform: rotate(120deg)">
+            <span style="transform: rotate(-120deg)">4</span>
+        </div>
+        <div class="number" style="transform: rotate(150deg)">
+            <span style="transform: rotate(-150deg)">5</span>
+        </div>
+        <div class="number" style="transform: rotate(180deg)">
+            <span style="transform: rotate(-180deg)">6</span>
+        </div>
+        <div class="number" style="transform: rotate(210deg)">
+            <span style="transform: rotate(-210deg)">7</span>
+        </div>
+        <div class="number" style="transform: rotate(240deg)">
+            <span style="transform: rotate(-240deg)">8</span>
+        </div>
+        <div class="number" style="transform: rotate(270deg)">
+            <span style="transform: rotate(-270deg)">9</span>
+        </div>
+        <div class="number" style="transform: rotate(300deg)">
+            <span style="transform: rotate(-300deg)">10</span>
+        </div>
+        <div class="number" style="transform: rotate(330deg)">
+            <span style="transform: rotate(-330deg)">11</span>
+        </div>
+
+        <div class="hand" id="hourHand"></div>
+        <div class="hand" id="minuteHand"></div>
+        <div class="center"></div>
+    </div>
+
+    <div class="controls">
+
+        <div class="control">
+            <label for="hourSpeed">
+                <span>Velocidad de hora</span>
+                <span id="hourValue">1°/s</span>
+            </label>
+            <input type="range" id="hourSpeed"
+                   min="-30" max="30" step="0.5" value="1">
+        </div>
+
+        <div class="control">
+            <label for="minuteSpeed">
+                <span>Velocidad de minutos</span>
+                <span id="minuteValue">6°/s</span>
+            </label>
+            <input type="range" id="minuteSpeed"
+                   min="-180" max="180" step="1" value="6">
+        </div>
+
+        <div class="buttons">
+            <button id="pauseButton">Pausar</button>
+            <button id="resetButton">Resetear</button>
+        </div>
+
+        <div id="readout">Hora: 12:00</div>
+    </div>
+
+    <script>
+        const hourHand = document.getElementById("hourHand");
+        const minuteHand = document.getElementById("minuteHand");
+
+        const hourSpeedInput = document.getElementById("hourSpeed");
+        const minuteSpeedInput = document.getElementById("minuteSpeed");
+
+        const hourValue = document.getElementById("hourValue");
+        const minuteValue = document.getElementById("minuteValue");
+        const readout = document.getElementById("readout");
+
+        const pauseButton = document.getElementById("pauseButton");
+        const resetButton = document.getElementById("resetButton");
+
+        let hourAngle = 0;
+        let minuteAngle = 0;
+
+
+        let hourSpeed = Number(hourSpeedInput.value);
+        let minuteSpeed = Number(minuteSpeedInput.value);
+
+        let paused = false;
+        let previousTime = null;
+
+        function updateClock() {
+            hourHand.style.transform =
+                `rotate(${hourAngle}deg)`;
+
+            minuteHand.style.transform =
+                `rotate(${minuteAngle}deg)`;
+
+
+                const hours = Math.floor(
+                ((hourAngle % 360 + 360) % 360) / 30
+            );
+
+            const minutes = Math.floor(
+                ((minuteAngle % 360 + 360) % 360) / 6
+            );
+
+            readout.textContent =
+                `Hour: ${String(hours === 0 ? 12 : hours).padStart(2, "0")}:` +
+                `${String(minutes).padStart(2, "0")}`;
+        }
+
+        function animate(timestamp) {
+            if (previousTime === null) {
+                previousTime = timestamp;
+            }
+
+            const deltaTime = (timestamp - previousTime) / 1000;
+            previousTime = timestamp;
+
+            if (!paused) {
+                hourAngle += hourSpeed * deltaTime;
+                minuteAngle += minuteSpeed * deltaTime;
+
+                updateClock();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        hourSpeedInput.addEventListener("input", () => {
+            hourSpeed = Number(hourSpeedInput.value);
+            hourValue.textContent = `${hourSpeed}°/s`;
+        });
+
+        minuteSpeedInput.addEventListener("input", () => {
+            minuteSpeed = Number(minuteSpeedInput.value);
+            minuteValue.textContent = `${minuteSpeed}°/s`;
+        });
+
+        pauseButton.addEventListener("click", () => {
+            paused = !paused;
+            pauseButton.textContent = paused ? "Resume" : "Pause";
+        });
+
+        resetButton.addEventListener("click", () => {
+            hourAngle = 0;
+            minuteAngle = 0;
+            previousTime = null;
+            updateClock();
+        });
+
+        updateClock();
+        requestAnimationFrame(animate);
+    </script>
+
+</body>
+</html>
