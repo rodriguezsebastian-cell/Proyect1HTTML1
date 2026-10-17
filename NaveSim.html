@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spaceship Sim</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #10101e;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7ee7ff;
+            margin: 20px 0 8px;
+        }
+
+        p {
+            color: #c5d4f5;
+        }
+
+        canvas {
+            display: block;
+            width: min(1000px, 96vw);
+            height: auto;
+            margin: 20px auto;
+            border: 3px solid #596bba;
+            border-radius: 10px;
+        }
+
+        .controls {
+            max-width: 1000px;
+            margin: 0 auto 25px;
+            padding: 15px;
+            background: #20243d;
+            border-radius: 10px;
+        }
+
+        .controls p {
+            line-height: 1.8;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #ff0b0b;
+            color: #f3f3f5;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Nave simulación</h1>
+
+    <canvas id="space" width="1000" height="600"></canvas>
+
+    <div class="controls">
+        <h2>Controles de nave</h2>
+
+        <p>
+            <b>W / </b> Acelerar<br>
+            <b>S / </b> Reversa<br>
+            <b>A / </b> Girar izquierda<br>
+            <b>D / </b> Girar derecha
+        </p>
+
+        <p id="status"> Velocidad: 0.00</p>
+
+        <button id="reset"> Reset </button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("space");
+        const ctx = canvas.getContext("2d");
+        const status = document.getElementById("status");
+
+      
+
+        const ship = {
+            x: 500,
+            y: 300,
+            angle: -Math.PI / 2,
+            vx: 0,
+            vy: 0,
+            size: 22
+        };
+
+        const keys = {};
+
+        const acceleration = 0.16;
+        const rotationSpeed = 0.055;
+
+        const friction = 0.99;
+
+        const maxSpeed = 5;
+
+        const boundary = 30;
+
+   
+
+        const stars = [];
+
+        for (let i = 0; i < 150; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.8 + 0.4,
+                alpha: Math.random() * 0.6 + 0.4
+            });
+        }
+
+    
+
+        document.addEventListener("keydown", function(event) {
+            const key = event.key.toLowerCase();
+
+            if (
+                ["arrowup", "arrowdown",
+                 "arrowleft", "arrowright", " "].includes(key)
+            ) {
+                event.preventDefault();
+            }
+
+            keys[key] = true;
+        });
+
+        document.addEventListener("keyup", function(event) {
+            keys[event.key.toLowerCase()] = false;
+        });
+
+        window.addEventListener("blur", function() {
+            for (const key in keys) {
+                keys[key] = false;
+            }
+        });
+
+        
+
+        function drawBackground() {
+            const gradient = ctx.createLinearGradient(
+                0, 0, canvas.width, canvas.height
+            );
+
+            gradient.addColorStop(0, "#090d25");
+            gradient.addColorStop(0.5, "#20204a");
+            gradient.addColorStop(1, "#451b50");
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (const star of stars) {
+                ctx.globalAlpha = star.alpha;
+                ctx.fillStyle = "white";
+
+                ctx.beginPath();
+                ctx.arc(
+                    star.x,
+                    star.y,
+                    star.radius,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1;
+
+            const planetGradient = ctx.createRadialGradient(
+                790, 125, 5,
+                810, 145, 95
+            );
+
+            planetGradient.addColorStop(0, "#ffccff");
+            planetGradient.addColorStop(0.5, "#a45de0");
+            planetGradient.addColorStop(1, "#45216e");
+
+            ctx.fillStyle = planetGradient;
+            ctx.beginPath();
+            ctx.arc(810, 145, 75, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+      
+        function drawShip() {
+            ctx.save();
+
+            ctx.translate(ship.x, ship.y);
+            ctx.rotate(ship.angle);
+
+            if (keys["w"] || keys["arrowup"]) {
+                ctx.fillStyle = "#ff9d36";
+
+                ctx.beginPath();
+                ctx.moveTo(-ship.size + 2, -8);
+                ctx.lineTo(-ship.size - 20 - Math.random() * 8, 0);
+                ctx.lineTo(-ship.size + 2, 8);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = "#fff176";
+
+                ctx.beginPath();
+                ctx.moveTo(-ship.size, -4);
+                ctx.lineTo(-ship.size - 12, 0);
+                ctx.lineTo(-ship.size, 4);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            const shipGradient = ctx.createLinearGradient(
+                -ship.size, 0, ship.size, 0
+            );
+
+            shipGradient.addColorStop(0, "#43c6db");
+            shipGradient.addColorStop(1, "#ffffff");
+
+            ctx.fillStyle = shipGradient;
+            ctx.strokeStyle = "#7ee7ff";
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(ship.size + 8, 0);
+            ctx.lineTo(-ship.size, -15);
+            ctx.lineTo(-ship.size + 7, 0);
+            ctx.lineTo(-ship.size, 15);
+            ctx.closePath();
+
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#3155a6";
+
+            ctx.beginPath();
+            ctx.ellipse(4, 0, 9, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            
+            ctx.beginPath();
+            ctx.moveTo(-8, -9);
+            ctx.lineTo(-16, -19);
+            ctx.moveTo(-8, 9);
+            ctx.lineTo(-16, 19);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+
+        function updateShip() {
+            if (keys["a"] || keys["arrowleft"]) {
+                ship.angle -= rotationSpeed;
+            }
+
+            if (keys["d"] || keys["arrowright"]) {
+                ship.angle += rotationSpeed;
+            }
+
+            if (keys["w"] || keys["arrowup"]) {
+                ship.vx += Math.cos(ship.angle) * acceleration;
+                ship.vy += Math.sin(ship.angle) * acceleration;
+            }
+
+            if (keys["s"] || keys["arrowdown"]) {
+                ship.vx -= Math.cos(ship.angle) * acceleration;
+                ship.vy -= Math.sin(ship.angle) * acceleration;
+            }
+
+            const speed = Math.hypot(ship.vx, ship.vy);
+
+            if (speed > maxSpeed) {
+                ship.vx = (ship.vx / speed) * maxSpeed;
+                ship.vy = (ship.vy / speed) * maxSpeed;
+            }
+
+            ship.vx *= friction;
+            ship.vy *= friction;
+
+            ship.x += ship.vx;
+            ship.y += ship.vy;
+
+            if (ship.x < boundary) {
+                ship.x = boundary;
+                ship.vx = Math.max(0, ship.vx);
+            }
+
+            if (ship.x > canvas.width - boundary) {
+                ship.x = canvas.width - boundary;
+                ship.vx = Math.min(0, ship.vx);
+            }
+
+            if (ship.y < boundary) {
+                ship.y = boundary;
+                ship.vy = Math.max(0, ship.vy);
+            }
+
+            if (ship.y > canvas.height - boundary) {
+                ship.y = canvas.height - boundary;
+                ship.vy = Math.min(0, ship.vy);
+            }
+
+            status.textContent =
+                "Speed: " +
+                Math.hypot(ship.vx, ship.vy).toFixed(2) +
+                " | Friction: " + friction +
+                " | Max speed: " + maxSpeed;
+        }
+
+        function animate() {
+            updateShip();
+            drawBackground();
+            drawShip();
+
+            requestAnimationFrame(animate);
+        }
+
+        document.getElementById("reset").addEventListener("click", function() {
+            ship.x = canvas.width / 2;
+            ship.y = canvas.height / 2;
+            ship.angle = -Math.PI / 2;
+            ship.vx = 0;
+            ship.vy = 0;
+        });
+
+        animate();
+    </script>
+
+</body>
+</html>
